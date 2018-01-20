@@ -1,4 +1,3 @@
-#include "problem_11.h"
 /*
 In the 20×20 grid below, four numbers along a diagonal line have been marked in red.
 
@@ -28,17 +27,20 @@ The product of these numbers is 26 × 63 × 78 × 14 = 1788696.
 What is the greatest product of four adjacent numbers in the same direction (up, down, left, right, or diagonally) in the 20×20 grid?
 
 */
+#include "stdio.h" //printf()
+#include "time.h" //clock(), CLOCKS_PER_SEC, clock_t
 
-int find_greatest_product(grid *input_grid, unsigned int size)
+int find_horiz(const int input_grid[20][20]);
+
+int find_horiz(const int input_grid[20][20])
 {
 	int max = 0;
 	int current_product = 1;
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < 20; i++)
 	{
-	    for (int j = 0; j < size-3; j++)
+	    for (int j = 0; j < 20-3; j++)
 	    {
 	    	current_product *= input_grid[i][j];
-	    	printf("%d\n", current_product);
 	    }
 	    if (current_product > max)
 		{
@@ -49,10 +51,47 @@ int find_greatest_product(grid *input_grid, unsigned int size)
 	return max;
 }
 
+int find_vert(const int input_grid[20][20])
+{
+	int max = 0;
+	int current_product = 1;
+	for (int i = 0; i < 20; i++)
+	{
+	    for (int j = 0; j < 20-3; j++)
+	    {
+	    	current_product *= input_grid[i][j];
+	    }
+	    if (current_product > max)
+		{
+			max = current_product;
+		}
+		current_product = 1;
+	}
+	return max;
+}
+
+int find_diag(const int input_grid[20][20])
+{
+	int max = 0;
+	int current_product = 1;
+	for (int i = 0; i < 20; i++)
+	{
+	    for (int j = 0; j < 20-3; j++)
+	    {
+	    	current_product *= input_grid[i][j];
+	    }
+	    if (current_product > max)
+		{
+			max = current_product;
+		}
+		current_product = 1;
+	}
+	return max;
+}
 
 int main(void)
 {
-	grid input_grid[20][20] = {
+	const int input_grid[20][20] = {
 			{8, 2, 22, 97, 38, 15, 0, 4, 0, 75, 4, 5, 7, 78, 52, 12, 5, 77, 91, 8},
 			{49, 49, 99, 4, 17, 81, 18, 57, 6, 87, 17, 4, 98, 43, 69, 48, 4, 56, 62, 0},
 			{81, 49, 31, 73, 55, 79, 14, 29, 93, 71, 4, 67, 53, 88, 3, 3, 49, 13, 36, 65},
@@ -74,6 +113,12 @@ int main(void)
 			{2, 73, 35, 29, 78, 31, 9, 1, 74, 31, 49, 71, 48, 86, 81, 16, 23, 57, 5, 54},
 			{1, 7, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52, 1, 89, 19, 67, 48}
 			};
-	int greatest_product = find_greatest_product(input_grid, 20);
+
+	clock_t start = clock();
+	int greatest_product = find_horiz(input_grid);
+	clock_t end = clock();
+	double total = ((double)(end - start)) / CLOCKS_PER_SEC;
+	printf("%f\n", total);
+	printf("%d\n", greatest_product);
     return 0;
 }
