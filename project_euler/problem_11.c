@@ -157,7 +157,6 @@ int main(int argc, char *argv[])
             };
 
     clock_t start = clock();
-
     int greatest_horiz = find_horiz(input_grid, size, test_len);
     int greatest_vert = find_vert(input_grid, size, test_len);
     int greatest_fwd_diag = find_forward_diag(input_grid, size, test_len);
