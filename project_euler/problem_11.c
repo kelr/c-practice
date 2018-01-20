@@ -28,32 +28,30 @@ What is the greatest product of four adjacent numbers in the same direction (up,
 
 */
 #include "stdio.h" //printf()
+#include "stdlib.h" //atoi()
 #include "time.h" //clock(), CLOCKS_PER_SEC, clock_t
 
-int find_horiz(const int input_grid[20][20]);
-int find_vert(const int input_grid[20][20]);
-int find_diag(const int input_grid[20][20]);
+int find_horiz(const int input_grid[20][20], int size, int len);
+int find_vert(const int input_grid[20][20], int size, int len);
+int find_forward_diag(const int input_grid[20][20], int size, int len);
+int find_backward_diag(const int input_grid[20][20], int size, int len);
 
 // Because horizontal checking covers both left and right,
 // we only really need to run through it once
-int find_horiz(const int input_grid[20][20])
+int find_horiz(const int input_grid[20][20], int size, int len)
 {
-    int size = 20;
     int max = 0;
-    int current_product = 1;
+    int curr = 1;
     for (int i = 0; i < size; i++)
     {
-        for (int j = 0; j < size-3; j++)
+        for (int j = 0; j < size-(len-1); j++)
         {
-            for (int k = 0; k < 4; k++)
+            for (int k = 0; k < len; k++)
             {
-                current_product *= input_grid[i][j+k];
-               }
-            if (current_product > max)
-            {
-                max = current_product;
+                curr *= input_grid[i][j+k];
             }
-            current_product = 1;
+            if (curr > max) max = curr;
+            curr = 1;
         }
     }
     return max;
@@ -61,80 +59,80 @@ int find_horiz(const int input_grid[20][20])
 
 // Because vertical checking covers both up and down,
 // we only really need to run through it once
-int find_vert(const int input_grid[20][20])
+int find_vert(const int input_grid[20][20], int size, int len)
 {
-    int size = 20;
     int max = 0;
-    int current_product = 1;
-    for (int i = 0; i < size-3; i++)
+    int curr = 1;
+    // Start from the top left side of the grid
+    for (int i = 0; i < size-(len-1); i++)
     {
         for (int j = 0; j < size; j++)
         {
-            for (int k = 0; k < 4; k++)
+            for (int k = 0; k < len; k++)
             {
-                current_product *= input_grid[i+k][j];
-               }
-            if (current_product > max)
-            {
-                max = current_product;
+                curr *= input_grid[i+k][j];
             }
-            current_product = 1;
+            if (curr > max) max = curr;
+            curr = 1;
         }
     }
     return max;
 }
 
 // We do need to check both diagonals though
-int find_diag(const int input_grid[20][20])
+int find_forward_diag(const int input_grid[20][20], int size, int len)
 {
-    int size = 20;
-    // Backslash 
-    int max_back = 0;
-    int curr_back = 1;
-    for (int i = 0; i < size-3; i++)
+    int max = 0;
+    int curr = 1;
+    // Start from the bottom left side of the grid
+    for (int i = size-1; i > (len-2); i--)
     {
-        for (int j = 0; j < size-3; j++)
+        for (int j = 0; j < size-(len-1); j++)
         {
-            for (int k = 0; k < 4; k++)
+            for (int k = 0; k < len; k++)
             {
-                curr_back *= input_grid[i+k][j+k];
-               }
-
-            if (curr_back > max_back)
-            {
-                max_back = curr_back;
+                curr *= input_grid[i-k][j+k];
             }
-            curr_back = 1;
+            if (curr > max) max = curr;
+            curr = 1;
         }
     }
-    // Forward slash
-    int max_forward = 0;
-    int curr_forward = 1;
-    for (int i = 19; i < size-3; i++)
-    {
-        printf("\n");
-        for (int j = 0; j < size-3; j++)
-        {
-            printf("\n");
-            for (int k = 0; k < 4; k++)
-            {
-                printf("%d, %d\n", i+k, j+k);
-                curr_forward *= input_grid[i+k][j+k];
-               }
-
-            if (curr_forward > max_forward)
-            {
-                max_forward = curr_forward;
-            }
-            curr_forward = 1;
-        }
-    }
-
     return max;
 }
 
-int main(void)
+int find_backward_diag(const int input_grid[20][20], int size, int len)
 {
+    int max = 0;
+    int curr = 1;
+    for (int i = 0; i < size-(len-1); i++)
+    {
+        for (int j = 0; j < size-(len-1); j++)
+        {
+            for (int k = 0; k < len; k++)
+            {
+                curr *= input_grid[i+k][j+k];
+            }
+            if (curr > max) max = curr;
+            curr = 1;
+        }
+    }
+    return max;
+}
+int main(int argc, char *argv[])
+{
+    if (argc != 2)
+    {
+        printf("Missing argument. Usage: ./a.out length\n");
+        return 1;
+    }
+    int size = 20;
+    // If test_len is 1, you actually get the largest value in the array
+    int test_len = atoi(argv[1]);
+    if (test_len < 1 || test_len > size)
+    {
+        printf("Length argument too small or too large!\n");
+        return 1;
+    }
     const int input_grid[20][20] = {
             {8, 2, 22, 97, 38, 15, 0, 4, 0, 75, 4, 5, 7, 78, 52, 12, 5, 77, 91, 8},
             {49, 49, 99, 4, 17, 81, 18, 57, 6, 87, 17, 4, 98, 43, 69, 48, 4, 56, 62, 0},
@@ -159,14 +157,22 @@ int main(void)
             };
 
     clock_t start = clock();
-    int greatest_horiz = find_horiz(input_grid);
-    int greatest_vert = find_vert(input_grid);
-    int greatest_diag = find_diag(input_grid);
+
+    int greatest_horiz = find_horiz(input_grid, size, test_len);
+    int greatest_vert = find_vert(input_grid, size, test_len);
+    int greatest_fwd_diag = find_forward_diag(input_grid, size, test_len);
+    int greatest_back_diag = find_backward_diag(input_grid, size, test_len);
+
     clock_t end = clock();
     double total = (((double)(end - start)) / CLOCKS_PER_SEC)*1000;
-    printf("%d\n", greatest_horiz);
-    printf("%d\n", greatest_vert);
-    printf("%d\n", greatest_diag);
+    printf("==========================================\n");
+    printf("Size: 20, Test Length: %d\n", test_len);
+    printf("Greatest Horizontal Product        : %d\n", greatest_horiz);
+    printf("Greatest Vertical Product          : %d\n", greatest_vert);
+    printf("Greatest Forward Diagonal Product  : %d\n", greatest_fwd_diag);
+    printf("Greatest Backward Diagonal Product : %d\n", greatest_back_diag);
     printf("Time taken: %f ms\n", total);
+    printf("==========================================\n");
+
     return 0;
 }
