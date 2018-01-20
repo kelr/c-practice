@@ -36,8 +36,7 @@ int find_vert(const int input_grid[20][20], int size, int len);
 int find_forward_diag(const int input_grid[20][20], int size, int len);
 int find_backward_diag(const int input_grid[20][20], int size, int len);
 
-// Because horizontal checking covers both left and right,
-// we only really need to run through it once
+// Because horizontal checking covers both left and right, we only really need to run through this once
 int find_horiz(const int input_grid[20][20], int size, int len)
 {
     int max = 0;
@@ -57,13 +56,11 @@ int find_horiz(const int input_grid[20][20], int size, int len)
     return max;
 }
 
-// Because vertical checking covers both up and down,
-// we only really need to run through it once
+// Because vertical checking covers both up and down, we only really need to run through this once
 int find_vert(const int input_grid[20][20], int size, int len)
 {
     int max = 0;
     int curr = 1;
-    // Start from the top left side of the grid
     for (int i = 0; i < size-(len-1); i++)
     {
         for (int j = 0; j < size; j++)
@@ -104,6 +101,7 @@ int find_backward_diag(const int input_grid[20][20], int size, int len)
 {
     int max = 0;
     int curr = 1;
+    // Start from the top left side of the grid
     for (int i = 0; i < size-(len-1); i++)
     {
         for (int j = 0; j < size-(len-1); j++)
@@ -118,6 +116,7 @@ int find_backward_diag(const int input_grid[20][20], int size, int len)
     }
     return max;
 }
+
 int main(int argc, char *argv[])
 {
     if (argc != 2)
@@ -125,14 +124,18 @@ int main(int argc, char *argv[])
         printf("Missing argument. Usage: ./a.out length\n");
         return 1;
     }
+
     int size = 20;
-    // If test_len is 1, you actually get the largest value in the array
+
+    // If test_len is 1, you actually get the largest value in the array, how nice
     int test_len = atoi(argv[1]);
     if (test_len < 1 || test_len > size)
     {
         printf("Length argument too small or too large!\n");
         return 1;
     }
+
+    // I find it weird that we can't use variables to instantiate array sizes
     const int input_grid[20][20] = {
             {8, 2, 22, 97, 38, 15, 0, 4, 0, 75, 4, 5, 7, 78, 52, 12, 5, 77, 91, 8},
             {49, 49, 99, 4, 17, 81, 18, 57, 6, 87, 17, 4, 98, 43, 69, 48, 4, 56, 62, 0},
@@ -161,16 +164,16 @@ int main(int argc, char *argv[])
     int greatest_vert = find_vert(input_grid, size, test_len);
     int greatest_fwd_diag = find_forward_diag(input_grid, size, test_len);
     int greatest_back_diag = find_backward_diag(input_grid, size, test_len);
-
     clock_t end = clock();
-    double total = (((double)(end - start)) / CLOCKS_PER_SEC)*1000;
+
+    double total_ms = (((double)(end - start)) / CLOCKS_PER_SEC)*1000;
     printf("==========================================\n");
     printf("Size: 20, Test Length: %d\n", test_len);
     printf("Greatest Horizontal Product        : %d\n", greatest_horiz);
     printf("Greatest Vertical Product          : %d\n", greatest_vert);
     printf("Greatest Forward Diagonal Product  : %d\n", greatest_fwd_diag);
     printf("Greatest Backward Diagonal Product : %d\n", greatest_back_diag);
-    printf("Time taken: %f ms\n", total);
+    printf("Time taken: %f ms\n", total_ms);
     printf("==========================================\n");
 
     return 0;
