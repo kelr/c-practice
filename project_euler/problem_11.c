@@ -31,7 +31,11 @@ What is the greatest product of four adjacent numbers in the same direction (up,
 #include "time.h" //clock(), CLOCKS_PER_SEC, clock_t
 
 int find_horiz(const int input_grid[20][20]);
+int find_vert(const int input_grid[20][20]);
+int find_diag(const int input_grid[20][20]);
 
+// Because horizontal checking covers both left and right,
+// we only really need to run through it once
 int find_horiz(const int input_grid[20][20])
 {
 	int max = 0;
@@ -40,52 +44,80 @@ int find_horiz(const int input_grid[20][20])
 	{
 	    for (int j = 0; j < 20-3; j++)
 	    {
-	    	current_product *= input_grid[i][j];
+	    	for (int k = 0; k < 4; k++)
+	    	{
+	    		current_product *= input_grid[i][j+k];
+	   		}
+		    if (current_product > max)
+			{
+				max = current_product;
+			}
+			current_product = 1;
 	    }
-	    if (current_product > max)
-		{
-			max = current_product;
-		}
-		current_product = 1;
 	}
 	return max;
 }
 
+// Because vertical checking covers both up and down,
+// we only really need to run through it once
 int find_vert(const int input_grid[20][20])
 {
 	int max = 0;
 	int current_product = 1;
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 20-3; i++)
 	{
-	    for (int j = 0; j < 20-3; j++)
+    	printf("\n");
+	    for (int j = 0; j < 20; j++)
 	    {
-	    	current_product *= input_grid[i][j];
-	    }
-	    if (current_product > max)
-		{
-			max = current_product;
+	    	printf("\n");
+	    	for (int k = 0; k < 4; k++)
+	    	{
+				printf("%d, %d\n", i+k, j);
+	    		current_product *= input_grid[i+k][j];
+	   		}
+		    if (current_product > max)
+			{
+				max = current_product;
+			}
+			current_product = 1;
 		}
-		current_product = 1;
 	}
 	return max;
 }
 
+// We do need to check both diagonals though
 int find_diag(const int input_grid[20][20])
 {
+	// Backslash 
 	int max = 0;
 	int current_product = 1;
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 20-3; i++)
 	{
-	    for (int j = 0; j < 20-3; j++)
-	    {
-	    	current_product *= input_grid[i][j];
-	    }
-	    if (current_product > max)
+		//printf("\n");
+		for (int j = 0; j < 4; j++)
 		{
-			max = current_product;
+			//printf("%d, %d\n", j+i, j);
+	    	current_product *= input_grid[j][j+1];
+		    if (current_product > max)
+			{
+				max = current_product;
+			}
+			current_product = 1;
 		}
-		current_product = 1;
 	}
+	// Forward slash
+	int max_forward = 0;
+	int current_product_forward = 1;
+	for (int i = 20-1; i > 2; i--)
+	{
+    	current_product_forward *= input_grid[i][i];
+	    if (current_product_forward > max_forward)
+		{
+			max_forward = current_product_forward;
+		}
+		current_product_forward = 1;
+	}
+
 	return max;
 }
 
@@ -115,10 +147,14 @@ int main(void)
 			};
 
 	clock_t start = clock();
-	int greatest_product = find_horiz(input_grid);
+	int greatest_horiz = find_horiz(input_grid);
+	int greatest_vert = find_vert(input_grid);
+	int greatest_diag = find_diag(input_grid);
 	clock_t end = clock();
-	double total = ((double)(end - start)) / CLOCKS_PER_SEC;
-	printf("%f\n", total);
-	printf("%d\n", greatest_product);
+	double total = (((double)(end - start)) / CLOCKS_PER_SEC)*1000;
+	printf("%d\n", greatest_horiz);
+	printf("%d\n", greatest_vert);
+	printf("%d\n", greatest_diag);
+	printf("Time taken: %f ms\n", total);
     return 0;
 }
