@@ -18,25 +18,16 @@ We can see that 28 is the first triangle number to have over five divisors.
 What is the value of the first triangle number to have over five hundred divisors?
 */
 #include "stdio.h" //printf()
+#include "math.h" //sqrt(), make sure to compile with the -lm flag
 #include "time.h" //clock(), CLOCKS_PER_SEC, clock_t
 
-unsigned int get_triangle_num(unsigned int position);
 unsigned int count_factors(unsigned int triangle_num);
-
-unsigned int get_triangle_num(unsigned int position)
-{
-    unsigned int sum = 0;
-    for (unsigned int i = 1; i < position + 1; i++)
-    {
-        sum += i;
-    }
-    return sum;
-}
 
 unsigned int count_factors(unsigned int triangle_num)
 {
-    // Implicit floor
-    unsigned int upper_limit = triangle_num / 2;
+    // Implicit floor by casting sqrt to int
+    // We only need to search for factors for up to sqrt(num)
+    unsigned int upper_limit = (int)sqrt(triangle_num);
     unsigned int count = 0;
 
     for (unsigned int i = 1; i <= upper_limit; i++)
@@ -44,6 +35,11 @@ unsigned int count_factors(unsigned int triangle_num)
         // Check if the current test num is a factor
         if (triangle_num % i == 0)
         {
+            // Count again for the factor's compliment if they are not the same
+            if (i != (triangle_num / i)) 
+            {
+                count++;
+            }
             count++;
         }
     }
@@ -53,26 +49,28 @@ unsigned int count_factors(unsigned int triangle_num)
 
 int main(int argc, char *argv[])
 {
-    unsigned int nth_triangle_num = 1;
+    unsigned int nth_triangle_num = 0;
     unsigned int curr_triangle_num = 0;
     unsigned int count = 0;
     unsigned int max_count = 0;
     clock_t start = clock();
     while (max_count <= 500)
     {
-        curr_triangle_num = get_triangle_num(nth_triangle_num);
+        // Build triangle numbers by adding the desired position to the previous one
+        nth_triangle_num++;
+        curr_triangle_num += nth_triangle_num;
         count = count_factors(curr_triangle_num);
         if (count > max_count)
         {
             max_count = count;
             printf("%d\n", max_count);
         }
-        nth_triangle_num++;
+
     }
     clock_t end = clock();
-    double total_ms = (((double)(end - start)) / CLOCKS_PER_SEC)*1000;
+    double total_s = (((double)(end - start)) / CLOCKS_PER_SEC);
 
-    printf("Triangle num:%d has %d factors\n",curr_triangle_num, max_count);
-    printf("Time taken: %f ms\n", total_ms);
+    printf("The %dth Triangle num: %d has %d factors\n",nth_triangle_num, curr_triangle_num, max_count);
+    printf("Time taken: %f s\n", total_s);
     return 0;
 }
