@@ -58,13 +58,14 @@ int main(int argc, char *argv[])
     unsigned int count = 0;
     unsigned int max_count = 0;
     clock_t start = clock();
-    while (max_count <= 500000)
+    while (max_count <= 500)
     {
         curr_triangle_num = get_triangle_num(nth_triangle_num);
         count = count_factors(curr_triangle_num);
         if (count > max_count)
         {
             max_count = count;
+            printf("%d\n", max_count);
         }
         nth_triangle_num++;
     }
