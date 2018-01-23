@@ -3,9 +3,9 @@ Project Euler Problem 13
 Work out the first ten digits of the sum of the following one-hundred 50-digit numbers.
 -- Number is in file problem_13_input
 */
-#include "stdio.h" //printf()
-#include "stdlib.h" //getline()
-#include "string.h" //strlen()
+#include "stdio.h" //printf(), fopen(), fclose()
+#include "stdlib.h" //getline(), malloc(), free()
+#include "string.h" //strlen(), strcspn()
 
 char* sum_big_numbers(char *num1, char *num2);
 char* reverse_string (char *str);
