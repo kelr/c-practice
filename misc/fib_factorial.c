@@ -40,10 +40,10 @@ unsigned long long *fib(unsigned long long n)
 int main(void)
 {
 
-    unsigned long long fact = factorial(100);
+    unsigned long long fact = factorial(10);
     printf("%u\n\n", fact);
 
-    unsigned long long fib_sz = 50;
+    unsigned long long fib_sz = 20;
     unsigned long long *list = fib(fib_sz);
     for (unsigned long long i=0; i < fib_sz-1; i++)
     {
