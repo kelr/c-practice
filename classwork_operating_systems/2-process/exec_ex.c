@@ -7,10 +7,10 @@
 
 int main(void)
 {
-    pid_t pid;
+    pid_t pid = fork();
 
     // Fork failure if ret val < 0
-    if ((pid = fork()) < 0) 
+    if (pid < 0) 
     { 
         fprintf(stderr, "fork failed\n"); 
         return 1;
