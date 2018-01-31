@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 
+// Adapted from http://www.cs.binghamton.edu/~huilu/examples/fork_ex.c
 
 int main()
 {
