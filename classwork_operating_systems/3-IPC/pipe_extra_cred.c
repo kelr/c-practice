@@ -1,18 +1,16 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
+#include <stdio.h> //perror(), printf()
+#include <stdlib.h> //exit(), 
+#include <sys/types.h> //pid_t, fork()
+#include <sys/wait.h> //wait()
+#include <unistd.h> //close(), dup2(), execlp(), fork()
 
 // Create the command: ps -elf | grep "/usr" | wc -l
-
 
 int main(void)
 {
     int fd_pipe_1[2];
     int fd_pipe_2[2];
-    pid_t pid, pid_fork_1, pid_fork_2, pid_fork_3;
+    pid_t parent_wait_pid, pid_fork_1, pid_fork_2, pid_fork_3;
 
     // Create a pipe
     if (pipe(fd_pipe_1) == -1) 
@@ -145,8 +143,8 @@ int main(void)
                 // Parent waits for the children to complete
                 for(int i = 0; i < 3; i++) 
                 {
-                    pid = wait(&status);
-                    printf("Parent: Child %d completed with status %d\n", pid, status);
+                    parent_wait_pid = wait(&status);
+                    printf("Parent: Child %d completed with status %d\n", parent_wait_pid, status);
                 }
             }   
         }
