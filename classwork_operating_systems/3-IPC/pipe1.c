@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
+#include <string.h>
 
 // Adapted from http://www.cs.binghamton.edu/~huilu/examples/pipe1.c
 
@@ -11,6 +13,12 @@ int main()
     int pipe_file_descriptors[2];
     char buf[30];
     pid_t pid;
+
+    char *message;
+    message = "Hello from child";
+    // Need +1 for null terminator
+    size_t msg_size = strlen(message) + 1;
+
 
     // Use the pipe() system call to create a pipe
     if (pipe(pipe_file_descriptors) == -1) 
@@ -29,14 +37,13 @@ int main()
     // Child process block
     if ( pid == 0 ) 
     {
-
         printf("Child: writing to the pipe\n");
 
         // Close the read part of the pipe in the child process scope
         close(pipe_file_descriptors[0]);
 
-        // Write Hello to the parent through the pipe
-        if (write(pipe_file_descriptors[1], "Hello", 6) <= 0) 
+        // Write a message to the parent through the pipe
+        if (write(pipe_file_descriptors[1], message, msg_size) <= 0) 
         {
             perror("Error in writing to the pipe in child");
             exit(1);
@@ -54,7 +61,7 @@ int main()
         close(pipe_file_descriptors[1]);
 
         // Read the message from the child
-        if (read(pipe_file_descriptors[0], buf, 6) <= 0 ) 
+        if (read(pipe_file_descriptors[0], buf, msg_size) <= 0 ) 
         {
             perror("Error in reading the pipe in parent");
             exit(1);
