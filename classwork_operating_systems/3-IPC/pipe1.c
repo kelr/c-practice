@@ -14,8 +14,7 @@ int main()
     char buf[30];
     pid_t pid;
 
-    char *message;
-    message = "Hello from child";
+    char *message = "Hello from child";
     // Need +1 for null terminator
     size_t msg_size = strlen(message) + 1;
 
