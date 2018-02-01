@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 // Adapted from http://www.cs.binghamton.edu/~huilu/examples/pipe2.c
@@ -9,9 +10,7 @@
 int main()
 {
     int file_descriptors[2];
-    char buf[30];
-    pid_t pid;
-    int status;
+    pid_t pid, pid_fork_1, pid_fork_2;
 
     // Create a pipe
     if (pipe(file_descriptors) == -1) 
@@ -21,7 +20,7 @@ int main()
     }
 
     // Fork the first child
-    if ((pid_t pid_fork_1 = fork()) < 0) 
+    if ((pid_fork_1 = fork()) < 0) 
     {
         perror("Error in forking child 1");
         exit(1);
@@ -51,7 +50,7 @@ int main()
     else
     {
         // Fork the second child
-        if ((pid_t pid_fork_2 = fork()) < 0) 
+        if ((pid_fork_2 = fork()) < 0) 
         {
             perror("Error in forking child 2");
             exit(1);
@@ -82,6 +81,8 @@ int main()
             // The parent does not need any pipe file descriptors as it is not sending or receiving any data
             close(file_descriptors[0]); 
             close(file_descriptors[1]); 
+
+            int status;
 
             // Parent waits for the children to complete
             for(int i=0; i<2; i++) 
