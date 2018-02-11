@@ -85,12 +85,19 @@ int main(void)
     int* test_array;
     test_array = (int[10]){10,23,18,49,78,172,55,8,29,37};
 
+    printf("Input: \n[");
+    for (size_t i = 0; i < 10; i++)
+    {
+        printf("%d%s", test_array[i], (i!=9) ? ", " : "]\n");
+    }
+
     merge_sort(test_array, 10);
 
     // Print results
+    printf("Output: \n[");
     for (size_t i = 0; i < 10; i++)
     {
-        printf("%d%s", test_array[i], (i!=9) ? ", " : "\n");
+        printf("%d%s", test_array[i], (i!=9) ? ", " : "]\n");
     }
 
     return 0;
