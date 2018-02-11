@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -18,8 +19,8 @@ void merge_sort(int* input, size_t size)
         const size_t size_one = floor(size / 2);
         const size_t size_two = size - size_one;
 
-        int* array_one = malloc(sizeof(size_t) * size_one);
-        int* array_two = malloc(sizeof(size_t) * size_two);
+        int* array_one = malloc(sizeof(int) * size_one);
+        int* array_two = malloc(sizeof(int) * size_two);
 
         for (size_t i = 0; i < size_one; i++)
         {
@@ -43,5 +44,16 @@ void merge_sort(int* input, size_t size)
 
 int main(void)
 {
+    int* test_array;
+    test_array = (int[10]){1,15,29,33,0,22,999,62,10,77};
+
+    merge_sort(test_array, 10);
+
+    // Print results
+    for (size_t i = 0; i < 10; i++)
+    {
+        printf("%d%s", test_array[i], (i!=9) ? ", " : "\n");
+    }
+
     return 0;
 }
